@@ -1,0 +1,49 @@
+# vim: ts=2 sw=2 et
+# -*- coding: utf-8 -*-
+
+
+# The content is based on the Cloud Builders Community Packer builder,
+# https://github.com/GoogleCloudPlatform/cloud-builders-community/blob/master/packer/cloudbuild.yaml,
+# commit ID d693f36c1ad65297ec5038f08f9bca4dae027bea,
+# which originally had the following copyright & license:
+# Copyright 2017 Google, Inc.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#     http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+substitutions:
+  # This is the Google Container Registry region to use.
+  # Valid values include 'us', 'eu', and 'asia'.
+  _GCR_REGION: us
+
+  # Set these to the version number & SHA-256 checksum of the Packer version to
+  # use.  The Linux amd64 version is required.
+  _PACKER_VERSION: 1.7.0
+  _PACKER_VERSION_SHA256SUM: 935e81c07381a964bdbaddde2d890c91d52e88b9e5375f3882840925f6a96893
+
+steps:
+  # Download the Packer image.
+  - name: 'gcr.io/cloud-builders/wget'
+    args: ["https://releases.hashicorp.com/packer/${_PACKER_VERSION}/packer_${_PACKER_VERSION}_linux_amd64.zip"]
+  # Build an Ubuntu container with Packer installed.
+  # See the Dockerfile for more details.
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '${_GCR_REGION}.gcr.io/$PROJECT_ID/packer:${_PACKER_VERSION}',
+           '-t', '${_GCR_REGION}.gcr.io/$PROJECT_ID/packer',
+           '--build-arg', 'PACKER_VERSION=${_PACKER_VERSION}',
+           '--build-arg', 'PACKER_VERSION_SHA256SUM=${_PACKER_VERSION_SHA256SUM}',
+           '.']
+
+# These are the images produced by Cloud Build.
+images:
+  - '${_GCR_REGION}.gcr.io/$PROJECT_ID/packer:latest'
+  - '${_GCR_REGION}.gcr.io/$PROJECT_ID/packer:${_PACKER_VERSION}'
+
+# Tags for easy identification.
+tags: ['packer-builder']
