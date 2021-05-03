@@ -1,0 +1,55 @@
+# vim: ts=2 sw=2 et
+# -*- coding: utf-8 -*-
+
+# © 2021 The Board of Trustees of the Leland Stanford Junior University.
+# All Rights Reserved (for now!).
+
+substitutions:
+  # This is the Google Container Registry region to use.
+  # Valid values include 'us', 'eu', and 'asia'.
+  _GCR_REGION: us
+
+  # Which version of the Packer container should we use?
+  _PACKER_TAG: latest
+
+  # Instead of granting permissions directly to Cloud Build, create a service
+  # account with the necessary permissions, and grant Cloud Build
+  # `roles/iam.serviceAccountUser` access.
+  # This is the email address of that Packer service account.
+  # _SERVICE_ACCOUNT_EMAIL: packer@project.iam.gserviceaccount.com
+
+  # The Packer build file to use.
+  _PACKER_FILE: globus.pkr.hcl
+
+  # Packer creates a temporary Compute Engine instance to make a new image.
+  # This is the zone into which the image is launched.
+  # _ZONE: us-west1-a
+
+  # This is the subnet to attach to the temporary Compute Engine instance.
+  # _SUBNET: packer
+
+# NOTE: We do not use the serviceAccount key.  Instead, we use service account
+# impersonation within Packer.  We do this for a few reasons:
+# 1. The serviceAccount key does not appear to support interpolation.
+# 2. The serviceAccount key is not supported for triggered builds.
+# 3. You have to explicitly set a bucket name for logs, which means you cannot
+#    use the default logs bucket.  You'd have to create (and maintain) one.
+
+# There's only one step: Run Packer.
+# Packer does all the work; we don't need to deal with any artifacts or images.
+steps:
+  - name: '${_GCR_REGION}.gcr.io/$PROJECT_ID/packer:${_PACKER_TAG}'
+    args:
+      - build
+      - -var
+      - 'project_id=$PROJECT_ID'
+      - -var
+      - 'zone=${_ZONE}'
+      - -var
+      - 'subnet_id=${_SUBNET}'
+      - -var
+      - 'service_account=${_SERVICE_ACCOUNT_EMAIL}'
+      - ${_PACKER_FILE}
+
+# Tags for easy identification.
+tags: ['packer']
