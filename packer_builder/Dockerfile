@@ -1,6 +1,8 @@
 # vim: ts=2 sw=2 et
 # -*- coding: utf-8 -*-
 
+# © 2021 The Board of Trustees of the Leland Stanford Junior University.
+
 # The content is based on the Cloud Builders Community Packer builder,
 # https://github.com/GoogleCloudPlatform/cloud-builders-community/blob/master/packer/Dockerfile,
 # commit ID 781ef078f408f309ab7dbc8a7eeacb3cd5af524e,
