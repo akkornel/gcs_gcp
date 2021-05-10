@@ -65,7 +65,6 @@ The downside of using impersonation is that
 [OS Login](https://cloud.google.com/compute/docs/oslogin) may not be used.  The
 API used to upload a key for OS Login takes the 
 
-
 ## Permissions
 
 The Cloud Build Default Service Account needs two roles on the Packer
@@ -101,7 +100,6 @@ expressed as roles with permissions:
 * `roles/compute.instanceAdmin.v1`, full access to all images.  The intention
   is that Globus Connect Personal images—maintained by this builder—are the
   only images in the project.
-
 
 # Parameters
 
