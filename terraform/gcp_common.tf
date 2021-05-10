@@ -17,6 +17,12 @@ variable "zone" {
   description = "For zonal resources, the zone to use, within the region."
 }
 
+variable "ssh_client_subnets" {
+  type = list(string)
+  description = "The list of subnets that are allowed to connect to select VMs via SSH.  Set to 127.0.0.1/32 to disable."
+  default = ["127.0.0.1/32"]
+}
+
 # TERRAFORM CONFIG
 
 terraform {
@@ -70,4 +76,32 @@ resource "google_compute_project_metadata" "zonal_dns" {
   metadata = {
     VmDnsSetting = "ZonalOnly"
   }
+}
+
+# MODULES
+
+module "packer" {
+  source = "./packer"
+
+  region = var.region
+  zone = var.zone
+  firewall_subnets = var.ssh_client_subnets
+}
+
+# OUTPUTS
+
+output "packer_service_account_id" {
+  value = module.packer.service_account_id
+}
+
+output "packer_project_id" {
+  value = module.packer.project_id
+}
+
+output "packer_zone" {
+  value = module.packer.zone
+}
+
+output "packer_subnet_id" {
+  value = module.packer.subnet_id
 }
