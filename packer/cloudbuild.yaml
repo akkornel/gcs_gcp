@@ -21,6 +21,12 @@ substitutions:
   # The Packer build file to use.
   _PACKER_FILE: globus.pkr.hcl
 
+  # The directory where the Packer files live.
+  # If you are running this build from a trigger that pulls from the Git
+  # repository, and the Packer files live in a subdirectory (for example,
+  # "packer"), set this to the name of the sub-directory.
+  _PACKER_DIR: .
+
   # Packer creates a temporary Compute Engine instance to make a new image.
   # This is the zone into which the image is launched.
   # _ZONE: us-west1-a
@@ -50,6 +56,7 @@ steps:
       - -var
       - 'service_account=${_SERVICE_ACCOUNT_EMAIL}'
       - ${_PACKER_FILE}
+    dir: ${_PACKER_DIR}
 
 # Tags for easy identification.
 tags: ['packer']

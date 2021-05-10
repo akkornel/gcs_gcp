@@ -141,7 +141,13 @@ You can build this using a few different ways:
   branch.
 
   With this method, you can override default parameters in the trigger
-  configuration.
+  configuration.  There are also some paraneters that have no default, and so
+  you will need to provide a substitution.
+
+  One parameter you will almost always need to override is the `_PACKER_DIR`
+  variable.  If the trigger is pulling from a Git repository, that Git repo
+  will likely have these files in a sub-directory.  You will need to set
+  `_PACKER_DIR` to that sub-directory.
 
 * **Manually**: In a terminal, navigate to this directory and run `gcloud
   builds submit .`.
