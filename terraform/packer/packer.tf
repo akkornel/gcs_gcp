@@ -44,6 +44,11 @@ data "google_netblock_ip_ranges" "cloud_netblocks" {
   range_type = "cloud-netblocks"
 }
 
+# This is the list of subnets used by the Cloud Identity-Aware Proxy.
+data "google_netblock_ip_ranges" "iap_forwarders" {
+  range_type = "iap-forwarders"
+}
+
 # IAM (including SERVICE ACCOUNTS)
 
 # Packer will have its own service account, to keep it separate from the Globus
@@ -179,6 +184,19 @@ resource "google_compute_firewall" "packer-external" {
 
   direction = "INGRESS"
   source_ranges = var.firewall_subnets
+  allow {
+    protocol = "tcp"
+    ports = ["22"]
+  }
+}
+
+resource "google_compute_firewall" "packer-external-iap" {
+  name = "packer-ssh-iap"
+  description = "Allow SSH inbound via the Identity-Aware Proxy"
+  network = google_compute_network.packer.id
+
+  direction = "INGRESS"
+  source_ranges = data.google_netblock_ip_ranges.iap_forwarders.cidr_blocks
   allow {
     protocol = "tcp"
     ports = ["22"]
