@@ -118,6 +118,11 @@ To use Packer, you need to set these parameters:
   file, which Packer will use for build instructions.  It defaults to
   "globus.pkr.hcl".
 
+* `_PACKER_DIR` is the path where the Packer files are located.  It defaults to
+  ".", the current directory.  If you are running Cloud Build via a trigger,
+  and the Packer files are in a sub-directory of the repository, you will need
+  to change this to be the path of the sub-directory.
+
 * `_ZONE` is the name of the Compute Engine zone where Packer will temporarily
   create Compute Engine disks and VM instances.  This needs to match the zone
   specified in the fine-grained permissions for the Packer Service Account.
