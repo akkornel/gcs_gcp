@@ -1,2 +1,7 @@
 # Ignore editor temporary files
 .*.swp
+
+# Ignore terraform files
+terraform.tfvars
+.terraform
+.terraform.lock.hcl
