@@ -152,6 +152,76 @@ EOT
   }
 }
 
+# What follows are fine-grained permissions for the Cloud Build bucket.
+
+# Give Cloud Build write access to upload artifacts
+resource "google_project_iam_member" "cloudbuild-storage-write-artifacts" {
+  project = data.google_project.project.project_id
+  role = "roles/storage.objectCreator"
+  member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  condition {
+    title = "Cloud Build may write to artifacts storage"
+    description = "Cloud build must be able to upload artifacts from builds."
+    expression = <<EOT
+resource.name.startsWith("projects/_/buckets/${google_storage_bucket.cloudbuild-data.name}/objects/artifacts/")
+EOT
+  }
+}
+
+# Give Cloud Build read access to source uplaods from manual builds.
+resource "google_project_iam_member" "cloudbuild-storage-read-source" {
+  project = data.google_project.project.project_id
+  role = "roles/storage.objectViewer"
+  member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  condition {
+    title = "Cloud Build may read from source storage"
+    description = "When manual builds are submitted, this is where the source files are stored."
+    expression = <<EOT
+resource.name.startsWith("projects/_/buckets/${google_storage_bucket.cloudbuild-data.name}/objects/source/")
+EOT
+  }
+}
+
+# BUCKETS
+
+# Create a bucket to store Cloud Build artifacts, and manual build source.
+# NOTE: Cloud Build does not support specifying a region and zone.  So we
+# hard-code the bucket to US.
+resource "google_storage_bucket" "cloudbuild-data" {
+  name = "${data.google_project.project.project_id}_cloudbuild"
+  location = "US"
+
+  # Bucket misc. settings
+  force_destroy = true
+  versioning {
+    enabled = false
+  }
+
+  # Bucket security
+  uniform_bucket_level_access = true
+
+  # Stroage class and lifecycle rules:
+  # Start out in Standard class, move to Coldline after a month, delete in 18.
+  storage_class = "STANDARD"
+  lifecycle_rule {
+    condition {
+      age = "32"
+    }
+    action {
+      type = "SetStorageClass"
+      storage_class = "COLDLINE"
+    }
+  }
+  lifecycle_rule {
+    condition {
+      age = "548"
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
 # NETWORK
 
 # Packer has its own VPC, to keep it separate from everything else.
