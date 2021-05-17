@@ -23,6 +23,20 @@ variable "service_account" {
   description = "The Service Account to impersonate in all GCP operations."
 }
 
+# WARNING: This variable uses JSON {{timestamp}}:
+# https://www.packer.io/docs/templates/legacy_json_templates/engine
+local "build_timestamp" {
+  expression = "{{timestamp}}"
+  sensitive = false
+}
+
+# This variable's definition uses the HCL2 timestamp():
+# https://www.packer.io/docs/templates/hcl_templates/functions/datetime/timestamp
+local "build_time" {
+  expression = formatdate("YYYY-MM-DD'Z'hh:mm", timestamp())
+  sensitive = false
+}
+
 source "googlecompute" "deb" {
   # Set project and location based in input variables.
   project_id = var.project_id
@@ -47,9 +61,9 @@ source "googlecompute" "deb" {
   instance_name = "packer-{{uuid}}"
 
   # Attributes to use for the created image.
-  image_name = "globus-{{timestamp}}"
+  image_name = "globus-${local.build_timestamp}"
   image_family = "globus"
-  image_description = "Globus image built on {{isotime}}"
+  image_description = "Globus image built on ${local.build_time}"
 }
 
 build {
