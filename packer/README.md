@@ -119,9 +119,10 @@ To use Packer, you need to set these parameters:
   "globus.pkr.hcl".
 
 * `_PACKER_DIR` is the path where the Packer files are located.  It defaults to
-  ".", the current directory.  If you are running Cloud Build via a trigger,
-  and the Packer files are in a sub-directory of the repository, you will need
-  to change this to be the path of the sub-directory.
+  "packer", the current directory.  The Packer build involves copying files
+  located elsewhere in the workspace, so the build is run from the root of the
+  workspace, which means we need to tell Packer to look for config files in a
+  sub-directory of the repisotory.
 
 * `_ZONE` is the name of the Compute Engine zone where Packer will temporarily
   create Compute Engine disks and VM instances.  This needs to match the zone
@@ -149,16 +150,11 @@ You can build this using a few different ways:
   configuration.  There are also some paraneters that have no default, and so
   you will need to provide a substitution.
 
-  One parameter you will almost always need to override is the `_PACKER_DIR`
-  variable.  If the trigger is pulling from a Git repository, that Git repo
-  will likely have these files in a sub-directory.  You will need to set
-  `_PACKER_DIR` to that sub-directory.
-
 * **Manually**: In a terminal, navigate to this directory and run `gcloud
   builds submit .`.
 
   With this method, you can override parameters on the command line, like so:
-  `gcloud builds submit
+  `gcloud builds submit --config=packer/cloudbuild.yaml
   --substitutions=_PACKER_TAG=1.7.0,_GCR_REGION=asia .`.
 
 Note that in both cases, you will need to provide substitutions for

@@ -22,10 +22,9 @@ substitutions:
   _PACKER_FILE: globus.pkr.hcl
 
   # The directory where the Packer files live.
-  # If you are running this build from a trigger that pulls from the Git
-  # repository, and the Packer files live in a subdirectory (for example,
-  # "packer"), set this to the name of the sub-directory.
-  _PACKER_DIR: .
+  # Packer files live in a sub-directory of the repository; this should be the
+  # name of the sub-directory.
+  _PACKER_DIR: packer
 
   # Packer creates a temporary Compute Engine instance to make a new image.
   # This is the zone into which the image is launched.
