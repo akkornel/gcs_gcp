@@ -211,10 +211,12 @@ build {
   }
   provisioner "file" {
     direction = "download"
-    sources = [
-      "/tmp/dpkg_pkglist.txt",
-      "/tmp/pip_pkglist.txt"
-    ]
-    destination = "."
+    source = "/tmp/dpkg_pkglist.txt"
+    destination = "dpkg_pkglist.txt"
+  }
+  provisioner "file" {
+    direction = "download"
+    source = "/tmp/pip_pkglist.txt"
+    destination = "pip_pkglist.txt"
   }
 }
