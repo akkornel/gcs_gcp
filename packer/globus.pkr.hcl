@@ -147,6 +147,39 @@ build {
     ]
   }
 
+  # Copy the entire workspace directory (which should be the entire Git repo).
+  # Note that the shell provisioner here does not run under sudo.  That is
+  # because we are doing a mkdir in /tmp, and we don't want the directory to be
+  # owned by root.
+  provisioner "shell" {
+    inline = [
+      "mkdir /tmp/workspace"
+    ]
+  }
+  provisioner "file" {
+    # Ending the source path in / is important here.
+    source = "../"
+    destination = "/tmp/workspace"
+  }
+
+  # Copy and run the bootstrap script.
+  provisioner "file" {
+    source = "code_bootstrap.sh"
+    destination = "/tmp/code_bootstrap.sh"
+  }
+  provisioner "shell" {
+    execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+
+    inline = [
+      # Install packages required for bootstrap.
+      "apt-get -y install python3-venv",
+
+      # Execute the bootstrap script.
+      "chmod a+x /tmp/code_bootstrap.sh",
+      "/tmp/code_bootstrap.sh"
+    ]
+  }
+
   # Final cleanup!
   provisioner "shell" {
     environment_vars = [
