@@ -78,9 +78,11 @@ build {
   # Note that installing the Google Cloud monitoring agent will start the
   # collection of additional metrics that might not be stored for free.
   # See https://cloud.google.com/stackdriver/pricing?#metrics-chargeable
+  # apt-key environment variable from https://stackoverflow.com/questions/48162574
   provisioner "shell" {
     environment_vars = [
-      "DEBIAN_FRONTEND=noninteractive"
+      "DEBIAN_FRONTEND=noninteractive",
+      "APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1"
     ]
 
     execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
@@ -106,7 +108,8 @@ build {
   # Install GCSv5.4
   provisioner "shell" {
     environment_vars = [
-      "DEBIAN_FRONTEND=noninteractive"
+      "DEBIAN_FRONTEND=noninteractive",
+      "APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1"
     ]
 
     execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
@@ -191,5 +194,24 @@ build {
     inline = [
       "apt-get -y autoremove"
     ]
+  }
+
+  # Dump package version information, and copy out of the build system.
+  provisioner "shell" {
+    execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+
+    inline = [
+      "dpkg-query -W > /tmp/dpkg_pkglist.txt",
+      "/opt/gcs_gcp/bin/pip list --pre --format freeze > /tmp/pip_pkglist.txt",
+      "chmod a+r /tmp/dpkg_pkglist.txt /tmp/pip_pkglist.txt"
+    ]
+  }
+  provisioner "file" {
+    direction = "download"
+    sources = [
+      "/tmp/dpkg_pkglist.txt",
+      "/tmp/pip_pkglist.txt"
+    ]
+    destination = "."
   }
 }
