@@ -187,6 +187,10 @@ build {
     destination = "/tmp/code_bootstrap.sh"
   }
   provisioner "shell" {
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive"
+    ]
+
     execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
 
     inline = [
