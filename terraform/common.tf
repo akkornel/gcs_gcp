@@ -106,7 +106,6 @@ module "gcs" {
 
   client_id = var.client_id
   region = var.region
-  firewall_subnets = var.ssh_client_subnets
 }
 
 # OUTPUTS
