@@ -2,6 +2,11 @@
 
 # INPUTS
 
+variable "client_id" {
+  type = string
+  description = "The UUID of the endpoint."
+}
+
 variable "project_id" {
   type = string
   description = "The ID of the Google Cloud project that will hold this image."
@@ -21,6 +26,12 @@ variable "ssh_client_subnets" {
   type = list(string)
   description = "The list of subnets that are allowed to connect to select VMs via SSH.  Set to 127.0.0.1/32 to disable."
   default = ["127.0.0.1/32"]
+}
+
+variable "enable_gcs" {
+  type = bool
+  description = "Set to true to enable GCS deployment."
+  default = false
 }
 
 # TERRAFORM CONFIG
@@ -85,6 +96,16 @@ module "packer" {
 
   region = var.region
   zone = var.zone
+  firewall_subnets = var.ssh_client_subnets
+}
+
+module "gcs" {
+  source = "./gcs"
+
+  count = var.enable_gcs == true ? 1 : 0
+
+  client_id = var.client_id
+  region = var.region
   firewall_subnets = var.ssh_client_subnets
 }
 
