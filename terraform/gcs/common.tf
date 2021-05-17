@@ -1,10 +1,33 @@
 # vim: ts=2 sw=2 et
 
+# INPUTS
+
+variable "client_id" {
+  type = string
+  description = "The UUID of the endpoint."
+}
+
+variable "region" {
+  type = string
+  description = "The region to use, within Google Cloud."
+}
+
 # DATA
 
 # The google_project provider allows us to look up our project ID without it
 # needing to be provided to us.
 data "google_project" "project" {
+}
+
+# A single image is used for both DTNs and management nodes.  Look it up here.
+data "google_compute_image" "gcs" {
+  family = "globus"
+  project = data.google_project.project.project_id
+}
+
+# This is the list of subnets used by the Cloud Identity-Aware Proxy.
+data "google_netblock_ip_ranges" "iap_forwarders" {
+  range_type = "iap-forwarders"
 }
 
 # SERVICES
