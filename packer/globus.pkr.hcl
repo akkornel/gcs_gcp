@@ -218,6 +218,11 @@ build {
   }
 
   # Dump package version information, and copy out of the build system.
+  provisioner "shell-local" {
+    inline = [
+      "mkdir -p ../artifacts/build-lists/"
+    ]
+  }
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
 
@@ -230,11 +235,11 @@ build {
   provisioner "file" {
     direction = "download"
     source = "/tmp/dpkg_pkglist.txt"
-    destination = "dpkg_pkglist.txt"
+    destination = "../artifacts/build-lists/${local.build_timestamp}/dpkg_pkglist.txt"
   }
   provisioner "file" {
     direction = "download"
     source = "/tmp/pip_pkglist.txt"
-    destination = "pip_pkglist.txt"
+    destination = "../artifacts/build-lists/${local.build_timestamp}/pip_pkglist.txt"
   }
 }
