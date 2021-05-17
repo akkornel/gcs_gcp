@@ -132,6 +132,22 @@ build {
     ]
   }
 
+  # Remove all packages not directly installed.
+  provisioner "shell" {
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive"
+    ]
+
+    execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+
+    inline = [
+      "apt-get -y autoremove"
+    ]
+  }
+
+  # From this point forward, anything with does an `apt-get remove` is
+  # responsible for their own autoremove.
+
   # Copy a file to replace the default Apache index file.
   provisioner "file" {
     source = "port80_index.html"
@@ -180,19 +196,6 @@ build {
       # Execute the bootstrap script.
       "chmod a+x /tmp/code_bootstrap.sh",
       "/tmp/code_bootstrap.sh"
-    ]
-  }
-
-  # Final cleanup!
-  provisioner "shell" {
-    environment_vars = [
-      "DEBIAN_FRONTEND=noninteractive"
-    ]
-
-    execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
-
-    inline = [
-      "apt-get -y autoremove"
     ]
   }
 
