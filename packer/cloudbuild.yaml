@@ -18,6 +18,9 @@ substitutions:
   # This is the email address of that Packer service account.
   # _SERVICE_ACCOUNT_EMAIL: packer@project.iam.gserviceaccount.com
 
+  # The name of the Pub/Sub Topic to notify when building is complete.
+  # _PUBSUB_TOPIC: projects/$PROJECT_ID/topics/image-updated
+
   # The Packer build file to use.
   _PACKER_FILE: globus.pkr.hcl
 
@@ -54,6 +57,8 @@ steps:
       - 'subnet_id=${_SUBNET}'
       - -var
       - 'service_account=${_SERVICE_ACCOUNT_EMAIL}'
+      - -var
+      - 'pubsub_topic=${_PUBSUB_TOPIC}'
       - ${_PACKER_FILE}
     dir: ${_PACKER_DIR}
 

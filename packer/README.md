@@ -44,6 +44,7 @@ Build APIs.  You can enable all of the required APIs with these commands:
     gcloud services enable storage-api.googleapis.com
     gcloud services enable cloudresourcemanager.googleapis.com
     gcloud services enable iamcredentials.googleapis.com
+    gcloud services enable pubsub.googleapis.com
     gcloud services enable cloudbuild.googleapis.com
 
 Before you can enable all of the above APIs, you will need to set up billing on
@@ -73,6 +74,16 @@ The bucket should have Lifecycle rules in place to automatically clean up
 objects after some period of time.  The suggested rules are to archive after a
 month, and delete after 1-2 years.
 
+# Pub/Sub Topic
+
+When the image has been pushed, a message is published to a Google Cloud
+Pub/Sub Topic.  This can be used to trigger other code, to do things like
+update Compute Engine VM Templates, or send an email notification of a
+successful build.
+
+The published message will contain a JSON object with one key, `image_name`.
+The value will be the name of the newly-created Compue Engine image.
+
 ## Service Account
 
 A Service Account is required for Packer to run.  In operation, Packer is
@@ -91,7 +102,7 @@ API used to upload a key for OS Login takes the
 
 ## Permissions
 
-The Cloud Build Default Service Account needs two roles on the Packer
+The Cloud Build Default Service Account needs the following roles on the Packer
 Service Account:
 
 * `roles/iam.serviceAccountUser`
@@ -106,6 +117,8 @@ Service Account:
 * `roles/Storage Object Creator` on the Cloud Storage bucket, for all objects
   with paths beginning with `/artifacts/`.  This is where artifacts of the
   build process will be uploaded.
+
+* In the permissions for the Pub/Sub Topic, the `roles/pubsub.publisher` role.
 
 The latter permission is needed due to how Packer does the impersonation.
 
@@ -146,6 +159,8 @@ To use Packer, you need to set these parameters:
   version number, or "latest".  The default is "latest".
 
 * `_SERVICE_ACCOUNT_EMAIL` is the email address of the Packer Service Account.
+
+* `_PUBSUB_TOPIC` is the name of a Pub/Sub Topic.
 
 * `_PACKER_FILE` is the name of the file, located in the same directory as this
   file, which Packer will use for build instructions.  It defaults to
@@ -192,8 +207,8 @@ You can build this using a few different ways:
   --substitutions=_PACKER_TAG=1.7.0,_GCR_REGION=asia .`.
 
 Note that in both cases, you will need to provide substitutions for
-`_SERVICE_ACCOUNT_EMAIL`, `_ZONE`, and `_SUBNET`.  If you fail to do so, manual
-builds will not launch, and triggered builds will fail.
+`_PUBSUB_TOPIC`, `_SERVICE_ACCOUNT_EMAIL`, `_ZONE`, and `_SUBNET`.  If you fail
+to do so, manual builds will not launch, and triggered builds will fail.
 
 # Outputs
 

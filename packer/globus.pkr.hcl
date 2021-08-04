@@ -23,6 +23,11 @@ variable "service_account" {
   description = "The Service Account to impersonate in all GCP operations."
 }
 
+variable "pubsub_topic" {
+  type = string
+  description = "The Pub/Sub Topic to notify on completion."
+}
+
 # WARNING: This variable uses JSON {{timestamp}}:
 # https://www.packer.io/docs/templates/legacy_json_templates/engine
 local "build_timestamp" {
@@ -250,6 +255,13 @@ build {
     inline = [
       "gsutil cp /tmp/dpkg_pkglist.txt gs://${var.project_id}_cloudbuild/artifacts/build-lists/${local.image_name}/dpkg_pkglist.txt",
       "gsutil cp /tmp/pip_pkglist.txt gs://${var.project_id}_cloudbuild/artifacts/build-lists/${local.image_name}/pip_pkglist.txt"
+    ]
+  }
+
+  # Post a Pub/Sub notification with the name of the new image
+  post-processor "shell-local" {
+    inline = [
+      "gcloud pubsub topics publish --message '{\"image_name\": \"${local.image_name}\"}' ${var.pubsub_topic}"
     ]
   }
 }
