@@ -39,6 +39,28 @@ EOT
   }
 }
 
+# SECRETS
+
+# Manager configuration includes the GCSGCP and GCSv5 client credentials.
+resource "google_secret_manager_secret" "management" {
+  depends_on = [google_project_service.secret]
+  secret_id = "management"
+
+  replication {
+    automatic = true
+  }
+}
+
+# The deployment key is used to configure DTNs.
+resource "google_secret_manager_secret" "deployment" {
+  depends_on = [google_project_service.secret]
+  secret_id = "deployment"
+
+  replication {
+    automatic = true
+  }
+}
+
 # NETWORK
 
 # Create a subnet for management nodes.

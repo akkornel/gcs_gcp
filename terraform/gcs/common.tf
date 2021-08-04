@@ -55,6 +55,13 @@ resource "google_project_service" "iap" {
   disable_on_destroy = false
 }
 
+# Enable Secret Manager to store sensitive configuration information.
+resource "google_project_service" "secret" {
+  project = data.google_project.project.project_id
+  service = "secretmanager.googleapis.com"
+  disable_on_destroy = false
+}
+
 # NETWORK
 
 # All of the GCS VMs—management and DTN—live in the same VPC & subnet.
