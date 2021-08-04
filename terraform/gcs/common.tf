@@ -36,12 +36,14 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
 resource "google_project_service" "iam" {
   project = data.google_project.project.project_id
   service = "iamcredentials.googleapis.com"
+  disable_on_destroy = false
 }
 
 # Google Compute Engine
 resource "google_project_service" "computeengine" {
   project = data.google_project.project.project_id
   service = "compute.googleapis.com"
+  disable_on_destroy = false
 }
 
 # Enable Identity-Aware Proxy, used to TCP forwarding in to Compute Engine VMs.
@@ -50,6 +52,7 @@ resource "google_project_service" "computeengine" {
 resource "google_project_service" "iap" {
   project = data.google_project.project.project_id
   service = "iap.googleapis.com"
+  disable_on_destroy = false
 }
 
 # NETWORK
