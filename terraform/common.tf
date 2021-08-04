@@ -125,3 +125,7 @@ output "packer_zone" {
 output "packer_subnet_id" {
   value = module.packer.subnet_id
 }
+
+output "packer_pubsub_topic" {
+  value = module.packer.pubsub_topic
+}

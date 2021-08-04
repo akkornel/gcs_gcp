@@ -89,6 +89,13 @@ resource "google_service_account_iam_member" "packer-computeengine-access" {
   member = "serviceAccount:${google_service_account.packer.email}"
 }
 
+# Allow Cloud Build to post messages to the Pub/Sub topic
+resource "google_pubsub_topic_iam_member" "cloudbuild-pubsub-post" {
+  project = data.google_project.project.project_id
+  topic = google_pubsub_topic.image_updated.name
+  role = "roles/pubsub.publisher"
+  member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+}
 
 # Give Packer read-only access to everything in Google Compute.
 resource "google_project_iam_member" "packer-compute-viewer" {
@@ -222,6 +229,38 @@ resource "google_storage_bucket" "cloudbuild-data" {
   }
 }
 
+# PUB/SUB
+
+# Pub/Sub is used to send notices when a new image has been built.
+# Each message is a JSON object containing a single key, `image_name`.  The
+# value is a string, containing the name of the just-built image.
+
+resource "google_pubsub_schema" "image_updated" {
+  name = "image-updated"
+  type = "AVRO"
+  definition = <<-EOT
+  {
+   "type" : "record",
+   "name" : "Avro",
+   "fields" : [
+     {
+       "name" : "image_name",
+       "type" : "string"
+     }
+   ]
+  }
+  EOT
+}
+
+resource "google_pubsub_topic" "image_updated" {
+  name = "image-updated"
+
+  schema_settings {
+    encoding = "JSON"
+    schema = google_pubsub_schema.image_updated.id
+  }
+}
+
 # NETWORK
 
 # Packer has its own VPC, to keep it separate from everything else.
@@ -314,6 +353,10 @@ output "project_id" {
 
 output "service_account_id" {
   value = google_service_account.packer.id
+}
+
+output "pubsub_topic" {
+  value = google_pubsub_topic.image_updated.id
 }
 
 output "subnet_id" {
