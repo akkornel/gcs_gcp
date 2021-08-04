@@ -89,6 +89,8 @@ resource "google_service_account_iam_member" "packer-computeengine-access" {
   member = "serviceAccount:${google_service_account.packer.email}"
 }
 
+# These are permissions on the Cloud Build Default Service Account
+
 # Allow Cloud Build to post messages to the Pub/Sub topic
 resource "google_pubsub_topic_iam_member" "cloudbuild-pubsub-post" {
   project = data.google_project.project.project_id
@@ -96,6 +98,36 @@ resource "google_pubsub_topic_iam_member" "cloudbuild-pubsub-post" {
   role = "roles/pubsub.publisher"
   member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
 }
+
+# Allow Cloud Build to read source files for manual builds
+resource "google_project_iam_member" "cloudbuild-storage-source-read" {
+  project = data.google_project.project.project_id
+  role = "roles/storage.objectViewer"
+  member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  condition {
+    title = "Cloud Build may read from source storage"
+    description = "When manual builds are submitted, this is where the source files are stored."
+    expression = <<EOT
+resource.name.startsWith("projects/_/buckets/uit-uit-et-globusmigrate-dev_cloudbuild/objects/source/")
+EOT
+  }
+}
+
+# Allow Cloud Build to write build artifacts
+resource "google_project_iam_member" "cloudbuild-storage-artifacts-write" {
+  project = data.google_project.project.project_id
+  role = "roles/storage.objectCreator"
+  member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  condition {
+    title = "Cloud Build may write to artifacts storage"
+    description = "Cloud build must be able to upload artifacts from builds."
+    expression = <<EOT
+resource.name.startsWith("projects/_/buckets/uit-uit-et-globusmigrate-dev_cloudbuild/objects/artifacts/")
+EOT
+  }
+}
+
+# These are permissions on the Packer Service Account
 
 # Give Packer read-only access to everything in Google Compute.
 resource "google_project_iam_member" "packer-compute-viewer" {
