@@ -49,6 +49,30 @@ Build APIs.  You can enable all of the required APIs with these commands:
 Before you can enable all of the above APIs, you will need to set up billing on
 your project.  Each API may take a few minutes to enable.
 
+## Cloud Storage Bucket
+
+The Cloud Build process requires a Google Cloud Storage bucket.
+
+The bucket has a specific name requirement: The bucket name **must** be the
+project ID followed by the string `_cloudbuild`.  So, if the project ID is
+`abc`, the bucket name must be `abc_cloudbuild`.  This requirement is because
+manual Cloud Build builds need a bucket to hold the build source, and this is
+the default name for that bucket.
+
+`gcloud build` upload objects are stored in the `/source` 'directory'.
+
+Every build will upload two files into the `/artifacts/build-lists`
+'directory', within a subdirectory whose name is the name of the built image:
+
+* `dpkg_pkglist.txt` is a list of Debian packages installed.
+
+* `pip_pkglist.txt` is a list of pip-installed Python packages in the
+  `/opt/gcs_gcp` Python virtual environment.
+
+The bucket should have Lifecycle rules in place to automatically clean up
+objects after some period of time.  The suggested rules are to archive after a
+month, and delete after 1-2 years.
+
 ## Service Account
 
 A Service Account is required for Packer to run.  In operation, Packer is
@@ -73,6 +97,15 @@ Service Account:
 * `roles/iam.serviceAccountUser`
 
 * `roles/iam.serviceAccountTokenCreator`
+
+* `roles/Storage Object Viewer` on the Cloud Storage bucket, for all objects
+  with paths beginning with `/source/`.  This is used to access any manual
+  Cloud Build upload tarballs, which are created when performing a manual Cloud
+  Build.
+
+* `roles/Storage Object Creator` on the Cloud Storage bucket, for all objects
+  with paths beginning with `/artifacts/`.  This is where artifacts of the
+  build process will be uploaded.
 
 The latter permission is needed due to how Packer does the impersonation.
 
@@ -144,14 +177,15 @@ You can build this using a few different ways:
 
 * **Triggers**: This is the preferred method for automation.  Set up a trigger
   that activates whenever something of interest happens, such as a push to a
-  branch.
+  branch.  The trigger should explicitly use a Cloud Build configuration file,
+  and you will need to provide the path to it (`packer/cloudbuild.yaml`).
 
   With this method, you can override default parameters in the trigger
   configuration.  There are also some paraneters that have no default, and so
   you will need to provide a substitution.
 
-* **Manually**: In a terminal, navigate to this directory and run `gcloud
-  builds submit .`.
+* **Manually**: In a terminal, navigate to the parent directory and run `gcloud
+  builds submit --config=packer/cloudbuild.yaml .`.
 
   With this method, you can override parameters on the command line, like so:
   `gcloud builds submit --config=packer/cloudbuild.yaml

@@ -225,11 +225,6 @@ build {
   }
 
   # Dump package version information, and copy out of the build system.
-  provisioner "shell-local" {
-    inline = [
-      "mkdir -p ../artifacts/build-lists/"
-    ]
-  }
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
 
@@ -242,11 +237,19 @@ build {
   provisioner "file" {
     direction = "download"
     source = "/tmp/dpkg_pkglist.txt"
-    destination = "../artifacts/build-lists/${local.build_timestamp}/dpkg_pkglist.txt"
+    destination = "/tmp/dpkg_pkglist.txt"
   }
   provisioner "file" {
     direction = "download"
     source = "/tmp/pip_pkglist.txt"
-    destination = "../artifacts/build-lists/${local.build_timestamp}/pip_pkglist.txt"
+    destination = "/tmp/pip_pkglist.txt"
+  }
+
+  # Copy artifacts to Cloud Storage
+  post-processor "shell-local" {
+    inline = [
+      "gsutil cp /tmp/dpkg_pkglist.txt gs://${var.project_id}_cloudbuild/artifacts/build-lists/${local.image_name}/dpkg_pkglist.txt",
+      "gsutil cp /tmp/pip_pkglist.txt gs://${var.project_id}_cloudbuild/artifacts/build-lists/${local.image_name}/pip_pkglist.txt"
+    ]
   }
 }
