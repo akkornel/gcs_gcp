@@ -25,8 +25,8 @@ substitutions:
 
   # Set these to the version number & SHA-256 checksum of the Packer version to
   # use.  The Linux amd64 version is required.
-  _PACKER_VERSION: 1.7.0
-  _PACKER_VERSION_SHA256SUM: 935e81c07381a964bdbaddde2d890c91d52e88b9e5375f3882840925f6a96893
+  _PACKER_VERSION: 1.7.4
+  _PACKER_VERSION_SHA256SUM: 3660064a56a174a6da5c37ee6b36107098c6b37e35cc84feb2f7f7519081b1b0
 
 steps:
   # Download the Packer image.

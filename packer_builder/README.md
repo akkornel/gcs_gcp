@@ -47,7 +47,7 @@ To build the Packer builder, you need to set three parameters:
   container.  You can specify 'us', 'eu', or 'asia'.
 
 At this time, the Cloud Build configuration defaults to using Packer version
-1.7.0, and uploading to the 'us' GCR region.
+1.7.4, and uploading to the 'us' GCR region.
 
 # Building
 
