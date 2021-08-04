@@ -29,8 +29,8 @@ RUN echo "${PACKER_VERSION_SHA256SUM}  packer_${PACKER_VERSION}_linux_amd64.zip"
 
 RUN /usr/bin/unzip packer_${PACKER_VERSION}_linux_amd64.zip
 
-# Ubuntu 20.04 LTS is the base OS used to run Packer.
-FROM ubuntu:focal
+# Use the Google Cloud SDK Docker image as the base.
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:latest
 RUN apt-get -y update && apt-get -y install ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=build packer /usr/bin/packer
 ENTRYPOINT ["/usr/bin/packer"]

@@ -6,11 +6,13 @@
 
 This Cloud Build job builds a container image containing
 [Packer](http://packer.io), which is a tool for building custom cloud images,
-using a basic cloud image as a base.
+using the Google Cloud SDK image as a base.
 
 The intended use of this Packer image is to build Google Compute Engine VM
 images containing Globus Connect Server.  But it could be used for other
-things.
+things.  For example, since it includes the Google Cloud SDK (the `gcloud`,
+`gsutil`, etc. commands), Packer local shells can interact easily with Google
+Cloud (beyond the Packer builder).
 
 # Requirements
 
