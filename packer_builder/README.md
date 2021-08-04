@@ -55,12 +55,6 @@ At this time, the Cloud Build configuration defaults to using Packer version
 
 You can build this using a few different ways:
 
-* **Triggers**: This is the preferred method for automation.  Set up a trigger
-  that activates whenever something of interest happens, such as a push to a
-  branch.
-
-  With this method, you can override parameters in the trigger configuration.
-
 * **Manually**: In a terminal, navigate to this directory and run `gcloud
   builds submit .`.
 
