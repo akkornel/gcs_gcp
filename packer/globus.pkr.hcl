@@ -37,6 +37,13 @@ local "build_time" {
   sensitive = false
 }
 
+# This is the name of the Compute Engine image.
+# It's defined here because we'll use it in multiple places.
+local "image_name" {
+  expression = "globus-${local.build_timestamp}"
+  sensitive = false
+}
+
 source "googlecompute" "deb" {
   # Set project and location based in input variables.
   project_id = var.project_id
@@ -61,7 +68,7 @@ source "googlecompute" "deb" {
   instance_name = "packer-{{uuid}}"
 
   # Attributes to use for the created image.
-  image_name = "globus-${local.build_timestamp}"
+  image_name = "${local.image_name}"
   image_family = "globus"
   image_description = "Globus image built on ${local.build_time}"
 }
