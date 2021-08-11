@@ -28,13 +28,6 @@ variable "pubsub_topic" {
   description = "The Pub/Sub Topic to notify on completion."
 }
 
-# WARNING: This variable uses JSON {{timestamp}}:
-# https://www.packer.io/docs/templates/legacy_json_templates/engine
-local "build_timestamp" {
-  expression = "{{timestamp}}"
-  sensitive = false
-}
-
 # This variable's definition uses the HCL2 timestamp():
 # https://www.packer.io/docs/templates/hcl_templates/functions/datetime/timestamp
 local "build_time" {
@@ -44,8 +37,10 @@ local "build_time" {
 
 # This is the name of the Compute Engine image.
 # It's defined here because we'll use it in multiple places.
+# WARNING: This variable uses JSON {{timestamp}}:
+# https://www.packer.io/docs/templates/legacy_json_templates/engine
 local "image_name" {
-  expression = "globus-${local.build_timestamp}"
+  expression = "globus-{{timestamp}}"
   sensitive = false
 }
 
