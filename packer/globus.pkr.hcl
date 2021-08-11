@@ -28,19 +28,26 @@ variable "pubsub_topic" {
   description = "The Pub/Sub Topic to notify on completion."
 }
 
+# This is a timestamp.  We define it as a local variable because we want it
+# "frozen", so that we can use the same timestamp multiple times.
+local "build_timestamp" {
+  expression = timestamp()
+  sensitive = false
+}
+
+# This is the build time, which will be used in image descriptions.
 # This variable's definition uses the HCL2 timestamp():
 # https://www.packer.io/docs/templates/hcl_templates/functions/datetime/timestamp
 local "build_time" {
-  expression = formatdate("YYYY-MM-DD'Z'hh:mm", timestamp())
+  expression = formatdate("YYYY-MM-DD'Z'hh:mm", local.build_timestamp)
   sensitive = false
 }
 
 # This is the name of the Compute Engine image.
-# It's defined here because we'll use it in multiple places.
-# WARNING: This variable uses JSON {{timestamp}}:
-# https://www.packer.io/docs/templates/legacy_json_templates/engine
+# It's defined here because we'll use it in multiple places, such as the image
+# name and the artifact paths in Cloud Storage.
 local "image_name" {
-  expression = "globus-{{timestamp}}"
+  expression = "globus-${formatdate("YYYYMMDDhhmmss", local.build_timestamp)}"
   sensitive = false
 }
 
