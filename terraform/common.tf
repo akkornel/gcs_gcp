@@ -39,6 +39,12 @@ variable "enable_gcs" {
   default = false
 }
 
+variable "slack_webhook" {
+  type = string
+  description = "The webhook URL for posting Slack messages."
+  sensitive = true
+}
+
 variable "github_owner" {
   type = string
   description = "The name of the GitHub account holding this repository"
@@ -124,6 +130,7 @@ module "packer" {
   cloudfunctions_region = var.cloudfunctions_region
   zone = var.zone
   firewall_subnets = var.ssh_client_subnets
+  slack_webhook = var.slack_webhook
   github_owner = var.github_owner
   github_name = var.github_name
   build_schedule = var.build_schedule

@@ -24,6 +24,12 @@ variable "firewall_subnets" {
   default = ["127.0.0.1/32"]
 }
 
+variable "slack_webhook" {
+  type = string
+  description = "The webhook URL for posting Slack messages."
+  sensitive = true
+}
+
 variable "github_owner" {
   type = string
   description = "The name of the GitHub account holding this repository"
