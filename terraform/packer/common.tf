@@ -24,6 +24,18 @@ variable "firewall_subnets" {
   default = ["127.0.0.1/32"]
 }
 
+variable "build_schedule" {
+  type = string
+  description = "cron-style schedule for building images.  Default is 9AM every Monday."
+  default = "9 0 * * 1"
+}
+
+variable "build_schedule_timezone" {
+  type = string
+  description = "Timezone for builds"
+  default = "Etc/UTC"
+}
+
 # DATA
 
 # The google_project provider allows us to look up our project ID without it

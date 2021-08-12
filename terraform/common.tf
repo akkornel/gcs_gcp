@@ -39,6 +39,17 @@ variable "enable_gcs" {
   default = false
 }
 
+variable "build_schedule" {
+  type = string
+  description = "cron-style schedule for building images.  Default is 9AM every Monday."
+  default = "9 0 * * 1"
+}
+
+variable "build_schedule_timezone" {
+  type = string
+  description = "Timezone for builds"
+  default = "Etc/UTC"
+}
 # TERRAFORM CONFIG
 
 terraform {
@@ -103,6 +114,8 @@ module "packer" {
   cloudfunctions_region = var.cloudfunctions_region
   zone = var.zone
   firewall_subnets = var.ssh_client_subnets
+  build_schedule = var.build_schedule
+  build_schedule_timezone = var.build_schedule_timezone
 }
 
 module "gcs" {
