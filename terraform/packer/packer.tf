@@ -42,10 +42,16 @@ resource "google_service_account_iam_member" "packer-computeengine-access" {
 
 # These are permissions on the Cloud Build Default Service Account
 
-# Allow Cloud Build to post messages to the Pub/Sub topic
+# Allow Cloud Build to post messages to the Pub/Sub topics
 resource "google_pubsub_topic_iam_member" "cloudbuild-pubsub-post" {
   project = data.google_project.project.project_id
-  topic = google_pubsub_topic.image_updated.name
+  topic = google_pubsub_topic.image-updated.name
+  role = "roles/pubsub.publisher"
+  member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+}
+resource "google_pubsub_topic_iam_member" "cloudbuild-pubsub-post-slack" {
+  project = data.google_project.project.project_id
+  topic = google_pubsub_topic.slack-message.name
   role = "roles/pubsub.publisher"
   member = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
 }
@@ -178,7 +184,7 @@ EOT
 # Each message is a JSON object containing a single key, `image_name`.  The
 # value is a string, containing the name of the just-built image.
 
-resource "google_pubsub_schema" "image_updated" {
+resource "google_pubsub_schema" "image-updated" {
   name = "image-updated"
   type = "AVRO"
   definition = <<-EOT
@@ -195,13 +201,17 @@ resource "google_pubsub_schema" "image_updated" {
   EOT
 }
 
-resource "google_pubsub_topic" "image_updated" {
+resource "google_pubsub_topic" "image-updated" {
   name = "image-updated"
 
   schema_settings {
     encoding = "JSON"
-    schema = google_pubsub_schema.image_updated.id
+    schema = google_pubsub_schema.image-updated.id
   }
+}
+
+resource "google_pubsub_topic" "slack-message" {
+  name = "slack-message"
 }
 
 # NETWORK

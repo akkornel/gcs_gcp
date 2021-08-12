@@ -132,6 +132,10 @@ output "packer_subnet_id" {
   value = module.packer.subnet_id
 }
 
-output "packer_pubsub_topic" {
-  value = module.packer.pubsub_topic
+output "packer_image_pubsub_topic" {
+  value = module.packer.image_pubsub_topic
+}
+
+output "packer_slack_pubsub_topic" {
+  value = module.packer.slack_pubsub_topic
 }

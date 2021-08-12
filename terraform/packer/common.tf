@@ -104,8 +104,12 @@ output "service_account_id" {
   value = google_service_account.packer.id
 }
 
-output "pubsub_topic" {
-  value = google_pubsub_topic.image_updated.id
+output "image_pubsub_topic" {
+  value = google_pubsub_topic.image-updated.id
+}
+
+output "slack_pubsub_topic" {
+  value = google_pubsub_topic.slack-message.id
 }
 
 output "subnet_id" {
