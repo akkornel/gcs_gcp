@@ -7,6 +7,11 @@ variable "region" {
   description = "The region to use, within Google Cloud."
 }
 
+variable "cloudfunctions_region" {
+  type = string
+  description = "The region to use for Cloud Functions."
+}
+
 variable "zone" {
   type = string
   description = "For zonal resources, the zone to use, within the region."

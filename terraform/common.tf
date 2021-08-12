@@ -17,6 +17,11 @@ variable "region" {
   description = "The region to use, within Google Cloud."
 }
 
+variable "cloudfunctions_region" {
+  type = string
+  description = "The region to use for Cloud Functions."
+}
+
 variable "zone" {
   type = string
   description = "For zonal resources, the zone to use, within the region."
@@ -95,6 +100,7 @@ module "packer" {
   source = "./packer"
 
   region = var.region
+  cloudfunctions_region = var.cloudfunctions_region
   zone = var.zone
   firewall_subnets = var.ssh_client_subnets
 }
