@@ -81,6 +81,31 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
   range_type = "iap-forwarders"
 }
 
+# SERVICES
+
+resource "google_project_service" "appengine" {
+  service = "appengine.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "cloudbuild" {
+  service = "cloudbuild.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "scheduler" {
+  depends_on = [
+    google_project_service.appengine
+  ]
+  service = "cloudscheduler.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "pubsub" {
+  service = "pubsub.googleapis.com"
+  disable_on_destroy = false
+}
+
 # BUCKETS
 
 # Create a bucket to store Cloud Build artifacts, and manual build source.
