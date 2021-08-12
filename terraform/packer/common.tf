@@ -54,6 +54,46 @@ data "google_netblock_ip_ranges" "iap_forwarders" {
   range_type = "iap-forwarders"
 }
 
+# BUCKETS
+
+# Create a bucket to store Cloud Build artifacts, and manual build source.
+# NOTE: Cloud Build does not support specifying a region and zone.  So we
+# hard-code the bucket to US.
+resource "google_storage_bucket" "cloudbuild-data" {
+  name = "${data.google_project.project.project_id}_cloudbuild"
+  location = "US"
+
+  # Bucket misc. settings
+  force_destroy = true
+  versioning {
+    enabled = false
+  }
+
+  # Bucket security
+  uniform_bucket_level_access = true
+
+  # Stroage class and lifecycle rules:
+  # Start out in Standard class, move to Coldline after a month, delete in 18.
+  storage_class = "STANDARD"
+  lifecycle_rule {
+    condition {
+      age = "32"
+    }
+    action {
+      type = "SetStorageClass"
+      storage_class = "COLDLINE"
+    }
+  }
+  lifecycle_rule {
+    condition {
+      age = "548"
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
 # OUTPUTS
 
 output "project_id" {
