@@ -1,0 +1,9 @@
+# Ignore anything that is not either Packer or the Packer Builder.
+#code  # We push code via Cloud Build right now.
+functions
+terraform
+
+# Ignore git, and anything mentioned by .gitignore
+.git
+.gitignore
+#!include:.gitignore
