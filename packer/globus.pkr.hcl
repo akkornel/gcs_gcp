@@ -23,9 +23,14 @@ variable "service_account" {
   description = "The Service Account to impersonate in all GCP operations."
 }
 
-variable "pubsub_topic" {
+variable "completion_pubsub_topic" {
   type = string
   description = "The Pub/Sub Topic to notify on completion."
+}
+
+variable "slack_pubsub_topic" {
+  type = string
+  description = "The Pub/Sub Topic to notify with updates."
 }
 
 # This is a timestamp.  We define it as a local variable because we want it
@@ -84,6 +89,13 @@ build {
   sources = [
     "sources.googlecompute.deb"
   ]
+
+  # Post a Pub/Sub notification to say we are building a new image.
+  provisioner "shell-local" {
+    inline = [
+      "gcloud pubsub topics publish --message '{\"text\": \":clock1: `${local.image_name}` bulld running...\"}' ${var.slack_pubsub_topic}"
+    ]
+  }
 
   # Upgrade out-of-date packages
   provisioner "shell" {
@@ -260,10 +272,11 @@ build {
     ]
   }
 
-  # Post a Pub/Sub notification with the name of the new image
+  # Post a Pub/Sub notification with the name of the new image.
   post-processor "shell-local" {
     inline = [
-      "gcloud pubsub topics publish --message '{\"image_name\": \"${local.image_name}\"}' ${var.pubsub_topic}"
+      "gcloud pubsub topics publish --message '{\"image_name\": \"${local.image_name}\"}' ${var.completion_pubsub_topic}",
+      "gcloud pubsub topics publish --message '{\"text\": \":tada: `${local.image_name}` bulld complete!\"}' ${var.slack_pubsub_topic}"
     ]
   }
 }
