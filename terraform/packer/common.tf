@@ -31,6 +31,11 @@ variable "firewall_subnets" {
 data "google_project" "project" {
 }
 
+# The google_app_engine_default_service_account provider allows up to look up
+# the ID of the App Engine default service account.
+data "google_app_engine_default_service_account" "default" {
+}
+
 # The google_compute_default_service_account provider allows us to look up
 # the ID of the Compute Engine default service account.
 data "google_compute_default_service_account" "default" {
