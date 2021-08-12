@@ -24,6 +24,16 @@ variable "firewall_subnets" {
   default = ["127.0.0.1/32"]
 }
 
+variable "github_owner" {
+  type = string
+  description = "The name of the GitHub account holding this repository"
+}
+
+variable "github_name" {
+  type = string
+  description = "The name of this GitHub repository"
+}
+
 variable "build_schedule" {
   type = string
   description = "cron-style schedule for building images.  Default is 9AM every Monday."

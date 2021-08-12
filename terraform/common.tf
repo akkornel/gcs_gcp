@@ -39,6 +39,16 @@ variable "enable_gcs" {
   default = false
 }
 
+variable "github_owner" {
+  type = string
+  description = "The name of the GitHub account holding this repository"
+}
+
+variable "github_name" {
+  type = string
+  description = "The name of this GitHub repository"
+}
+
 variable "build_schedule" {
   type = string
   description = "cron-style schedule for building images.  Default is 9AM every Monday."
@@ -114,6 +124,8 @@ module "packer" {
   cloudfunctions_region = var.cloudfunctions_region
   zone = var.zone
   firewall_subnets = var.ssh_client_subnets
+  github_owner = var.github_owner
+  github_name = var.github_name
   build_schedule = var.build_schedule
   build_schedule_timezone = var.build_schedule_timezone
 }
