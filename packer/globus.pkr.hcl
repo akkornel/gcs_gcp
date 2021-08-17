@@ -64,7 +64,7 @@ source "googlecompute" "deb" {
 
   # Choose our Debian source image.
   # Impersonation means that we cannot use OS Login.
-  source_image = "debian-10-buster-v20210316"
+  source_image_family = "debian-10"
   disk_size = 10
   ssh_username = "packer"
   use_os_login = false
