@@ -174,7 +174,9 @@ resource "google_compute_instance_template" "management" {
     metadata = {
         enable-oslogin = "TRUE"
         type = "management"
+        deployment_secret_id = google_secret_manager_secret.deployment.id
         globus_client_id = var.client_id
+        management_secret_id = google_secret_manager_secret.management.id
         slack_topic_id = var.slack_pubsub_topic
     }
     scheduling {

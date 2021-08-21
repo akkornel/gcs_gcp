@@ -133,6 +133,7 @@ resource "google_compute_instance_template" "dtn" {
     metadata = {
         enable-oslogin = "TRUE"
         type = "dtn"
+        deployment_secret_id = google_secret_manager_secret.deployment.secret_id
         globus_client_id = var.client_id
         slack_topic_id = var.slack_pubsub_topic
     }
