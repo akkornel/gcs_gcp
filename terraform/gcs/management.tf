@@ -135,11 +135,13 @@ resource "google_compute_instance_template" "management" {
     # Identity & Scopes
     # The scopes we request are based on the "default" set of scopes.
     # See https://cloud.google.com/sdk/gcloud/reference/alpha/compute/instances/set-scopes#--scopes
+    # We also add a scope for Pub/Sub access.
     service_account {
         email = google_service_account.gcs_management_vm.email
         scopes = [
             "https://www.googleapis.com/auth/logging.write",
             "https://www.googleapis.com/auth/monitoring.write",
+            "https://www.googleapis.com/auth/pubsub",
             "https://www.googleapis.com/auth/service.management.readonly",
             "https://www.googleapis.com/auth/servicecontrol",
             "https://www.googleapis.com/auth/trace.append"
