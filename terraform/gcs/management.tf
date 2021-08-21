@@ -71,6 +71,7 @@ resource "google_compute_subnetwork" "gcs_management" {
   ip_cidr_range = "10.210.0.0/24"
   region = var.region
   network = google_compute_network.gcs.id
+  private_ip_google_access = true
 }
 
 # Create a (non-BGP) router, which will host the Cloud NAT.
