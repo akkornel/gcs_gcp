@@ -17,6 +17,7 @@ resource "google_service_account" "gcs_management_vm" {
 module "gcs_management_vm_sa_common_config" {
     source = "./sa_common"
     account_email = google_service_account.gcs_management_vm.email
+    slack_pubsub_topic = var.slack_pubsub_topic
 }
 
 # Give management nodes read-only access to everything in Google Compute.
@@ -155,6 +156,7 @@ resource "google_compute_instance_template" "management" {
         enable-oslogin = "TRUE"
         type = "management"
         globus_client_id = var.client_id
+        slack_topic_id = var.slack_pubsub_topic
     }
     scheduling {
         preemptible = false

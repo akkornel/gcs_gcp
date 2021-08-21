@@ -17,6 +17,7 @@ resource "google_service_account" "gcs_dtn_vm" {
 module "gcs_dtn_vm_sa_common_config" {
     source = "./sa_common"
     account_email = google_service_account.gcs_dtn_vm.email
+    slack_pubsub_topic = var.slack_pubsub_topic
 }
 
 # NETWORK
@@ -130,6 +131,7 @@ resource "google_compute_instance_template" "dtn" {
         enable-oslogin = "TRUE"
         type = "dtn"
         globus_client_id = var.client_id
+        slack_topic_id = var.slack_pubsub_topic
     }
     scheduling {
         preemptible = false

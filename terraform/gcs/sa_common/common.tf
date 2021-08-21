@@ -7,6 +7,11 @@ variable "account_email" {
     description = "The email of the service account"
 }
 
+variable "slack_pubsub_topic" {
+  type = string
+  description = "The Slack Pub/Sub Topic ID"
+}
+
 # DATA
 
 # The google_project provider allows us to look up our project ID without it
@@ -28,6 +33,14 @@ resource "google_project_iam_member" "monitoring_writer" {
     project = data.google_project.project.project_id
     role = "roles/monitoring.metricWriter"
     member = "serviceAccount:${var.account_email}"
+}
+
+# Allow posting Slack messages to Pub/Sub
+resource "google_pubsub_topic_iam_member" "pubsub_slack" {
+  project = data.google_project.project.project_id
+  topic = var.slack_pubsub_topic
+  role = "roles/pubsub.publisher"
+  member = "serviceAccount:${var.account_email}"
 }
 
 # Allow the https://www.googleapis.com/auth/servicecontrol scope.
