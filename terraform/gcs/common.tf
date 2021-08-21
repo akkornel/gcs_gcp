@@ -12,6 +12,11 @@ variable "region" {
   description = "The region to use, within Google Cloud."
 }
 
+variable "slack_pubsub_topic" {
+  type = string
+  description = "The Pub/Sub Topic to use, when posting to Slack."
+}
+
 # DATA
 
 # The google_project provider allows us to look up our project ID without it

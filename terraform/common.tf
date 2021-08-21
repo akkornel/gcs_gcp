@@ -144,6 +144,7 @@ module "gcs" {
 
   client_id = var.client_id
   region = var.region
+  slack_pubsub_topic = module.packer.slack_pubsub_topic
 }
 
 # OUTPUTS
