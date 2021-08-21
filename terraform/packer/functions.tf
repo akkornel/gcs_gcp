@@ -42,6 +42,49 @@ resource "google_cloudfunctions_function" "cleanup" {
   ]
 }
 
+# FUNCTION: Update Templates
+
+resource "google_storage_bucket_object" "template" {
+  bucket = google_storage_bucket.cloudbuild-data.name
+  name = "functions/template.zip"
+  source = "../functions/template/.archive.zip"
+  content_type = "application/zip"
+}
+
+resource "google_cloudfunctions_function" "template" {
+  region = var.cloudfunctions_region
+  name = "template"
+  description = "When a new image is created, update Compute Engine templates to point to the new image."
+
+  runtime = "python39"
+  source_archive_bucket = google_storage_bucket.cloudbuild-data.name
+  source_archive_object = google_storage_bucket_object.template.name
+  entry_point = "handle_event"
+
+  available_memory_mb = 256
+  timeout = 180
+
+  event_trigger {
+    event_type = "google.pubsub.topic.publish"
+    resource = google_pubsub_topic.image-updated.name
+    failure_policy {
+      retry = false
+    }
+  }
+
+  environment_variables = {
+    LOG_LEVEL = "DEBUG",
+    SLACK_MESSAGE_TOPIC = google_pubsub_topic.slack-message.id,
+    TEMPLATE_NAMES = "gcs-dtn, gcs-management",
+  }
+
+  depends_on = [
+    google_project_iam_member.cloudfunctions-storage-functions-read,
+    google_pubsub_topic_iam_member.cloudfunctions-iam-subscribe-image,
+    google_pubsub_topic_iam_member.cloudfunctions-iam-post
+  ]
+}
+
 # FUNCTION: Slack Message
 
 resource "google_storage_bucket_object" "slack-message" {
