@@ -12,6 +12,11 @@ variable "slack_pubsub_topic" {
   description = "The Slack Pub/Sub Topic ID"
 }
 
+variable "deployment_secret_id" {
+  type = string
+  description = "The Deployment Key Secret ID"
+}
+
 # DATA
 
 # The google_project provider allows us to look up our project ID without it
@@ -41,6 +46,15 @@ resource "google_pubsub_topic_iam_member" "pubsub_slack" {
   topic = var.slack_pubsub_topic
   role = "roles/pubsub.publisher"
   member = "serviceAccount:${var.account_email}"
+}
+
+# Allow reads of the Deployment key
+resource "google_secret_manager_secret_iam_member" "deployment" {
+  project = data.google_project.project.project_id
+  secret_id = var.deployment_secret_id
+  role = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${var.account_email}"
+
 }
 
 # Allow the https://www.googleapis.com/auth/servicecontrol scope.

@@ -17,6 +17,7 @@ resource "google_service_account" "gcs_management_vm" {
 module "gcs_management_vm_sa_common_config" {
     source = "./sa_common"
     account_email = google_service_account.gcs_management_vm.email
+    deployment_secret_id = google_secret_manager_secret.deployment.secret_id
     slack_pubsub_topic = var.slack_pubsub_topic
 }
 
