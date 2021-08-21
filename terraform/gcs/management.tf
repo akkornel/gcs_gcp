@@ -114,6 +114,7 @@ resource "google_compute_router_nat" "gcs_management" {
     source_ip_ranges_to_nat = ["PRIMARY_IP_RANGE"]
   }
 
+  min_ports_per_vm = 64  # Optional, but fixes a weirdness with web UI.
   udp_idle_timeout_sec = 600
   tcp_established_idle_timeout_sec = 600
 
