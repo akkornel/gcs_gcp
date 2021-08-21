@@ -41,6 +41,21 @@ EOT
   }
 }
 
+# Give management nodes read/write to the Management and Deployment secrets.
+resource "google_secret_manager_secret_iam_member" "management-write" {
+  project = data.google_project.project.project_id
+  secret_id = google_secret_manager_secret.management.secret_id
+  role = "roles/secretmanager.secretVersionManager"
+  member = "serviceAccount:${google_service_account.gcs_management_vm.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "deployment-write" {
+  project = data.google_project.project.project_id
+  secret_id = google_secret_manager_secret.deployment.secret_id
+  role = "roles/secretmanager.secretVersionManager"
+  member = "serviceAccount:${google_service_account.gcs_management_vm.email}"
+}
+
 # SECRETS
 
 # Manager configuration includes the GCSGCP and GCSv5 client credentials.
