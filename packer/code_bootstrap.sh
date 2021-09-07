@@ -8,7 +8,7 @@ umask 0022
 
 # Set up the venv and update pip
 mkdir /opt/gcs_gcp
-python3 -m venv /opt/gcs_gcp
+python3 -m venv --system-site-packages /opt/gcs_gcp
 /opt/gcs_gcp/bin/pip install --upgrade pip wheel
 
 # Install code into the venv
