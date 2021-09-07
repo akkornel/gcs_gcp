@@ -235,7 +235,7 @@ build {
 
     inline = [
       # Install packages required for bootstrap.
-      "apt-get -y install python3-venv",
+      "apt-get -y install python3-venv python3-systemd",
 
       # Execute the bootstrap script.
       "chmod a+x /tmp/code_bootstrap.sh",
