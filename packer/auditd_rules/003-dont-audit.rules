@@ -1,0 +1,34 @@
+## General exclusions
+## Exclude noise created by apt
+-a exit,never -F arch=b32   -F exe=/usr/bin/apt-get 
+-a exit,never -F arch=b64   -F exe=/usr/bin/apt-get
+
+## Exclude noisy systemd related activity
+-a exit,never -F arch=b32  -F exe=/lib/systemd/systemd-udevd  -S unlink
+-a exit,never -F arch=b64  -F exe=/lib/systemd/systemd-udevd  -S unlink
+
+## Puppet agent related noise
+-a exit,never -F arch=b32  -F exe=/opt/puppetlabs/puppet/bin/pxp-agent
+-a exit,never -F arch=b64  -F exe=/opt/puppetlabs/puppet/bin/pxp-agent
+-a exit,never -F arch=b32  -F exe=/opt/puppetlabs/puppet/bin/ruby
+-a exit,never -F arch=b64  -F exe=/opt/puppetlabs/puppet/bin/ruby
+-a exit,never -F arch=b32  -F exe=/usr/bin/gpg  -S unlink
+-a exit,never -F arch=b64  -F exe=/usr/bin/gpg  -S unlink
+
+## Bigfix agent
+-a exit,never -F arch=b32  -F exe=/opt/BESClient/bin/BESClient
+-a exit,never -F arch=b64  -F exe=/opt/BESClient/bin/BESClient
+
+## OSSEC
+-a exit,never -F arch=b32  -F exe=/var/ossec/bin/ossec-syscheckd
+-a exit,never -F arch=b64  -F exe=/var/ossec/bin/ossec-syscheckd
+
+## Splunk
+-a exit,never -F arch=b32  -F exe=/opt/splunkforwarder/bin/splunkd
+-a exit,never -F arch=b64  -F exe=/opt/splunkforwarder/bin/splunkd
+
+## Ignore current working directory records
+-a always,exclude -F msgtype=CWD
+
+## Ignore EOE records (End Of Event, not needed)
+-a always,exclude -F msgtype=EOE

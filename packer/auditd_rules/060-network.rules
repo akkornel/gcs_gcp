@@ -1,0 +1,12 @@
+## All socket calls, probably noisy
+#-a always,exit -F arch=b64 -S socket -F a0=2 -k network
+#-a always,exit -F arch=b32 -S socket -F a0=2 -k network
+#-a always,exit -F arch=b64 -S socket -F a0=10 -k network
+#-a always,exit -F arch=b32 -S socket -F a0=10 -k network
+## Successful IPv4 Connections
+-a always,exit -F arch=b64 -S connect -F a2=16 -F success=1 -F key=network_connect_4 -k network_conn_v4 -k network
+-a always,exit -F arch=b32 -S connect -F a2=16 -F success=1 -F key=network_connect_4 -k network_conn_v4 -k network
+
+## Successful IPv6 Connections
+-a always,exit -F arch=b64 -S connect -F a2=28 -F success=1 -F key=network_connect_6 -k network_conn_v6 -k network
+-a always,exit -F arch=b32 -S connect -F a2=28 -F success=1 -F key=network_connect_6 -k network_conn_v6 -k network

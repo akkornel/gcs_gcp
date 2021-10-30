@@ -1,0 +1,27 @@
+## System locale,  networking audit - things that changes networking
+-w /etc/issue -p wa -k system-locale
+-w /etc/issue.net -p wa -k system-locale
+-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale -k system-networking
+-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale -k system-networking
+-w /etc/hosts -p wa -k system-locale -k system-networking
+#-w /etc/sysconfig/network -p wa -k system-locale -k system-networking
+#-w /etc/sysconfig/network-scripts/ -p wa -k system-networking
+-w /etc/network/ -p wa -k system-networking
+-w /etc/networks -p wa -k system-locale -k system-networking
+-w /etc/ssl/ -p wa -k system-cert-store
+-w /boot/ -p wa -k system-boot-files
+
+## KExec usage (all actions)
+-a always,exit -F arch=b64 -S kexec_load -k KEXEC
+-a always,exit -F arch=b32 -S sys_kexec_load -k KEXEC
+
+## Special files
+-a always,exit -F arch=b32 -S mknod -S mknodat -k specialfiles
+-a always,exit -F arch=b64 -S mknod -S mknodat -k specialfile
+
+## Change swap (only attributable)
+-a always,exit -F arch=b64 -S swapon -S swapoff -F auid!=4294967295 -k swap
+-a always,exit -F arch=b32 -S swapon -S swapoff -F auid!=4294967295 -k swap
+
+##iptables file changes
+-w /etc/iptables/ -p wa -k iptables

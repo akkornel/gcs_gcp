@@ -1,0 +1,3 @@
+## Root command executions
+-a always,exit -F arch=b64 -F euid=0 -S execve -F auid!=4294967295 -k rootcmd
+-a always,exit -F arch=b32 -F euid=0 -S execve -F auid!=4294967295 -k rootcmd

@@ -1,0 +1,8 @@
+## Kernel module insertion/deletion
+-w /sbin/insmod -p x -k kernelmod
+-w /sbin/rmmod -p x -k kernelmod
+-w /sbin/modeprobe -p x -k kernelmod
+-a always,exit -F arch=b32 -S init_module -S finit_module -S delete_module -k kernelmod
+-a always,exit -F arch=b64 -S init_module -S finit_module -S delete_module -k kernelmod
+-w /etc/modprobe.conf -p wa -k kernelmod
+-w /etc/modprobe.d/ -p wa -k kernelmod

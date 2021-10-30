@@ -1,0 +1,3 @@
+## Kernel parameters
+-w /etc/sysctl.conf -p wa -k sysctl
+-w /etc/sysctl.d -p wa -k sysctl

@@ -1,0 +1,12 @@
+## User authentication files/directories
+-w /etc/passwd -p wa -k auth-files
+-w /etc/shadow -p wa -k auth-files
+-w /etc/group -p wa -k auth-files
+-w /etc/gshadow -p wa -k auth-files
+-w /etc/security/ -p wa -k auth-files
+-w /etc/security/opasswd -p wa -k auth-files
+-w /etc/sudo.conf -p wa -k sudoers -k auth-files
+-w /etc/sudoers -p wa -k sudoers -k auth-files
+-w /etc/sudoers.d/ -p wa -k sudoers -k auth-files
+-w /etc/ssh/ -p wa  -k sshd-config -k auth-files
+-w /etc/pam.d/ -p wa  -k sshd-config -k auth-files -k pam-config

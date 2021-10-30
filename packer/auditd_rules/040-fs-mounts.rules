@@ -1,0 +1,3 @@
+## Audit all file system mounts
+-a always,exit -F arch=b64 -S mount -S umount2 -F auid!=4294967295 -k fs-mounts
+-a always,exit -F arch=b32 -S mount -S umount -S umount2 -F auid!=4294967295 -k fs-mounts
