@@ -1,2 +1,8 @@
 # Source: https://code.stanford.edu/secops-public/auditd
 # Commit ID 53e7462e06e2e4d7e3cfd9e11764131388ec2517
+#
+# The following modifications were made:
+# * 003-dont-audit.rules:
+#   Remove entries ignoring Puppet and Puppet's Ruby, the Bigfix agent,
+#   OSSEC, and Splunk.
+#   Add entries for two particularly-noisy Google Cloud Ops Agent programs.

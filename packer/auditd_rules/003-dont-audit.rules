@@ -8,24 +8,14 @@
 -a exit,never -F arch=b64  -F exe=/lib/systemd/systemd-udevd  -S unlink
 
 ## Puppet agent related noise
--a exit,never -F arch=b32  -F exe=/opt/puppetlabs/puppet/bin/pxp-agent
--a exit,never -F arch=b64  -F exe=/opt/puppetlabs/puppet/bin/pxp-agent
--a exit,never -F arch=b32  -F exe=/opt/puppetlabs/puppet/bin/ruby
--a exit,never -F arch=b64  -F exe=/opt/puppetlabs/puppet/bin/ruby
 -a exit,never -F arch=b32  -F exe=/usr/bin/gpg  -S unlink
 -a exit,never -F arch=b64  -F exe=/usr/bin/gpg  -S unlink
 
-## Bigfix agent
--a exit,never -F arch=b32  -F exe=/opt/BESClient/bin/BESClient
--a exit,never -F arch=b64  -F exe=/opt/BESClient/bin/BESClient
-
-## OSSEC
--a exit,never -F arch=b32  -F exe=/var/ossec/bin/ossec-syscheckd
--a exit,never -F arch=b64  -F exe=/var/ossec/bin/ossec-syscheckd
-
-## Splunk
--a exit,never -F arch=b32  -F exe=/opt/splunkforwarder/bin/splunkd
--a exit,never -F arch=b64  -F exe=/opt/splunkforwarder/bin/splunkd
+## Google Cloud Ops Agent
+-a exit,never -F arch=b32  -F exe=/opt/google-cloud-ops-agent/subagents/fluent-bit/bin/fluent-bit
+-a exit,never -F arch=b64  -F exe=/opt/google-cloud-ops-agent/subagents/fluent-bit/bin/fluent-bit
+-a exit,never -F arch=b32  -F exe=/opt/google-cloud-ops-agent/subagents/opentelemetry-collector/otelopscol
+-a exit,never -F arch=b64  -F exe=/opt/google-cloud-ops-agent/subagents/opentelemetry-collector/otelopscol
 
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
