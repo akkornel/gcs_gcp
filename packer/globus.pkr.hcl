@@ -111,7 +111,7 @@ build {
     ]
   }
 
-  # Install the Google Cloud monitoring agent.
+  # Install the Google Cloud Ops agent.
   # This is an optional component.  It is not required for Globus to work.
   # Enable or disable it as per your policy.
   # The Cloud Monitoring API must be enabled for this to work.
@@ -131,13 +131,13 @@ build {
       # Install the add-apt-repository command
       "apt-get -y install software-properties-common",
 
-      # Import the Google Cloud packages repo and signing key.
+      # Import the Google Cloud Ops Agent packages repo and signing key.
       "curl --connect-timeout 5 -s -f 'https://packages.cloud.google.com/apt/doc/apt-key.gpg' | apt-key add -",
-      "add-apt-repository 'deb https://packages.cloud.google.com/apt google-cloud-monitoring-buster-all main'",
+      "add-apt-repository 'deb https://packages.cloud.google.com/apt google-cloud-ops-agent-buster-all main'",
       "apt-get update",
 
-      # Install and enable the Google Cloud monitoring agent
-      "apt-get -y install stackdriver-agent",
+      # Install and enable the Google Cloud Ops agent.
+      # (It's enabled automatically during installation)
       "systemctl enable stackdriver-agent.service",
 
       # Remove software-properties-common
