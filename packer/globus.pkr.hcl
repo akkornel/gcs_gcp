@@ -172,6 +172,36 @@ build {
     ]
   }
 
+  # Install and configure auditd.
+  # This includes copying audit config files.
+  provisioner "file" {
+    source = "auditd_rules/"
+    destination = "/tmp/"
+  }
+  provisioner "shell" {
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive"
+    ]
+
+    execute_command = "chmod +x {{ .Path }}; sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+
+    inline = [
+      # Install auditd & plugins.
+      "apt-get -y install auditd audispd-plugins",
+
+      # Remove the default rules file
+      "rm -f /etc/audit/rules.d/audit.rules",
+
+      # Move the uploaded rules into palce"
+      "mv /tmp/auditd_rules/* /etc/audit/rules.d/",
+      "rmdir /tmp/auditd_rules",
+
+      # Rebuild the combined auditd rules.
+      # Change takes effect when the deployed nodes are booted.
+      "augengules"
+    ]
+  }
+
   # Remove all packages not directly installed.
   provisioner "shell" {
     environment_vars = [
