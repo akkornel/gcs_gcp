@@ -12,10 +12,18 @@
 -a exit,never -F arch=b64  -F exe=/usr/bin/gpg  -S unlink
 
 ## Google Cloud Ops Agent
--a exit,never -F arch=b32  -F exe=/opt/google-cloud-ops-agent/subagents/fluent-bit/bin/fluent-bit
--a exit,never -F arch=b64  -F exe=/opt/google-cloud-ops-agent/subagents/fluent-bit/bin/fluent-bit
--a exit,never -F arch=b32  -F exe=/opt/google-cloud-ops-agent/subagents/opentelemetry-collector/otelopscol
--a exit,never -F arch=b64  -F exe=/opt/google-cloud-ops-agent/subagents/opentelemetry-collector/otelopscol
+-a exit,never -F arch=b32  -F exe=/opt/google-cloud-ops-agent/subagents/fluent-bit/bin/fluent-bit  -S unlink -S socket -S connect -S fchown
+-a exit,never -F arch=b64  -F exe=/opt/google-cloud-ops-agent/subagents/fluent-bit/bin/fluent-bit  -S unlink -S socket -S connect -S fchown
+-a exit,never -F arch=b32  -F exe=/opt/google-cloud-ops-agent/subagents/opentelemetry-collector/otelopscol  -S socket -S connect -S fchown
+-a exit,never -F arch=b64  -F exe=/opt/google-cloud-ops-agent/subagents/opentelemetry-collector/otelopscol  -S socket -S connect -S fchown
+
+## Chrony
+-a exit,never -F arch=b32 -F exe=/usr/bin/chronyc -S unlink -S chmod
+-a exit,never -F arch=b64 -F exe=/usr/bin/chronyc -S unlink -S chmod
+
+## Systemd
+-a exit,never -F arch=b32 -F exe=/usr/lib/systemd/systemd  -S chmod
+-a exit,never -F arch=b64 -F exe=/usr/lib/systemd/systemd  -S chmod
 
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
