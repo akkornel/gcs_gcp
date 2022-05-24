@@ -175,8 +175,8 @@ build {
   # Install and configure auditd.
   # This includes copying audit config files.
   provisioner "file" {
-    source = "auditd_rules/"
-    destination = "/tmp/"
+    source = "auditd_rules"
+    destination = "/tmp"
   }
   provisioner "shell" {
     environment_vars = [
@@ -193,8 +193,8 @@ build {
       "rm -f /etc/audit/rules.d/audit.rules",
 
       # Move the uploaded rules into palce"
-      "mv /tmp/auditd_rules/* /etc/audit/rules.d/",
-      "rmdir /tmp/auditd_rules",
+      "cp /tmp/auditd_rules/* /etc/audit/rules.d/",
+      "rm -rf /tmp/auditd_rules",
 
       # Rebuild the combined auditd rules.
       # Change takes effect when the deployed nodes are booted.
