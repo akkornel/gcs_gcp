@@ -138,7 +138,7 @@ build {
 
       # Install and enable the Google Cloud Ops agent.
       # (It's enabled automatically during installation)
-      "systemctl enable stackdriver-agent.service",
+      "apt-get -y install stackdriver-agent",
 
       # Remove software-properties-common
       "apt-get -y remove software-properties-common"
