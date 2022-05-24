@@ -198,7 +198,7 @@ build {
 
       # Rebuild the combined auditd rules.
       # Change takes effect when the deployed nodes are booted.
-      "augengules"
+      "augenrules"
     ]
   }
 
