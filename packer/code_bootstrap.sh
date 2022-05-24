@@ -12,7 +12,7 @@ python3 -m venv --system-site-packages /opt/gcs_gcp
 /opt/gcs_gcp/bin/pip install --upgrade pip wheel
 
 # Install code into the venv
-/opt/gcs_gcp/bin/pip install --use-feature=in-tree-build /tmp/workspace/code/
+/opt/gcs_gcp/bin/pip install /tmp/workspace/code/
 
 # Purge the pip cache
 /opt/gcs_gcp/bin/pip cache purge
